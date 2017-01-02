@@ -2,7 +2,7 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Posts on </title>
-    <link>http://jessed.io/post/</link>
+    <link>http://jessed.io/post/index.xml</link>
     <description>Recent content in Posts on </description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
@@ -10,33 +10,33 @@
     <atom:link href="http://jessed.io/post/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
-      <title>Who&#39;s Running That on my System</title>
-      <link>http://jessed.io/post/Whos-running-that-on-my-system/</link>
+      <title>Who’s Running that on my System: Case of the stolen CPU</title>
+      <link>http://jessed.io/post/20160916-Whos-running-that-on-my-system/</link>
       <pubDate>Fri, 16 Sep 2016 01:11:56 -0700</pubDate>
       
-      <guid>http://jessed.io/post/Whos-running-that-on-my-system/</guid>
+      <guid>http://jessed.io/post/20160916-Whos-running-that-on-my-system/</guid>
       <description>
 
 &lt;p&gt;Last week, I found myself needing to find what application a query was originating from.
 My typical method for doing this is searching through source code before I
-eventually get angry that I can&amp;rsquo;t find the query originating from an ORM and
+eventually get angry that I can’t find the query originating from an ORM and
 start drafting an email decreeing that all applications get distinct logins to
-the database that I&amp;rsquo;ll never send because who is going to listen anyway.&lt;/p&gt;
+the database that I’ll never send because who is going to listen anyway.&lt;/p&gt;
 
 &lt;p&gt;I had an idea for how I can track a query all the way back to the process that
 accessed it and I even scripted it.&lt;/p&gt;
 
-&lt;h3 id=&#34;connections&#34;&gt;Connections&lt;/h3&gt;
+&lt;h2 id=&#34;connections&#34;&gt;Connections&lt;/h2&gt;
 
 &lt;p&gt;In MySQL every connection is mapped to a thread and each thread has an ID. When
-you run &lt;code&gt;SHOW PROCESSLIST&lt;/code&gt; in MySQL you can see &lt;strong&gt;all&lt;/strong&gt; the running processes.
-The information for this comes from the &lt;code&gt;processlist&lt;/code&gt; table in the
-&lt;code&gt;information_schema&lt;/code&gt; database. This table also lists the host and the
-&lt;em&gt;ephemeral&lt;/em&gt; port of the connection. The ephemeral port exists on the client
-(initiating) side of a TCP connection. So if you see a query running by using a
-tool like &lt;code&gt;mytop&lt;/code&gt; and you&amp;rsquo;re able to capture the thread ID you can be pretty
-sure that the connection is still open because TCP connections are expensive and
-most libraries try to pool them and reuse them.&lt;/p&gt;
+you run SHOW PROCESSLIST in MySQL you can see all the running processes. The
+information for this comes from the processlist table in the information_schema
+database. This table also lists the host and the ephemeral port of the
+connection. The ephemeral port exists on the client (initiating) side of a TCP
+connection. So if you see a query running by using a tool like mytop and you’re
+able to capture the thread ID you can be pretty sure that the connection is
+still open because TCP connections are expensive and most libraries try to pool
+them and reuse them.&lt;/p&gt;
 
 &lt;p&gt;Here is the section of the Go program I wrote to capture the host and the port.&lt;/p&gt;
 
@@ -73,7 +73,7 @@ func getHost(db *sql.DB) string {
 }
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;h3 id=&#34;hunting-down-the-connection&#34;&gt;Hunting down the connection&lt;/h3&gt;
+&lt;h2 id=&#34;hunting-down-the-connection&#34;&gt;Hunting down the connection&lt;/h2&gt;
 
 &lt;p&gt;Once you have the host and port you can then ssh into the host that you were
 given to find what process is connected to the port. This can be discovered
@@ -81,7 +81,7 @@ using a program like lsof. There are many ways to find the port a process is
 using but I am most familiar with lsof.&lt;/p&gt;
 
 &lt;p&gt;The Go code to SSH into a server uses the golang.org/x/crypto/ssh library and
-I&amp;rsquo;ve incorporated some of my knowledge of bash.&lt;/p&gt;
+I’ve incorporated some of my knowledge of bash.&lt;/p&gt;
 
 &lt;pre&gt;&lt;code class=&#34;language-go&#34;&gt;sshClient, err := setUpSSHClient(host)
 if err != nil {
@@ -143,12 +143,18 @@ func runCmd(client *ssh.Client, command string) (string, error) {
 }
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;h3 id=&#34;conclusion&#34;&gt;Conclusion&lt;/h3&gt;
+&lt;h2 id=&#34;conclusion&#34;&gt;Conclusion&lt;/h2&gt;
 
-&lt;p&gt;Once you have found the process you can then figure out what codebase a query
-originated from, you can do evil (and potentially informative) things like run
-strace, jstack, or gdb to diagnose issues (I wouldn&amp;rsquo;t recommend doing this in
-production). Happy query hunting!&lt;/p&gt;
+&lt;p&gt;This helped me find the process that was running the problematic query. I was
+able to find what codebase was causing the issue and thus the team that owns
+that codebase. It turns out they were in the middle of a deploy to fix the
+problem because they noticed it right before I did.&lt;/p&gt;
+
+&lt;p&gt;Once you have found the process you can you can also other informative things
+like run strace, jstack, or gdb to diagnose issues (I wouldn’t recommend doing
+this in production).&lt;/p&gt;
+
+&lt;p&gt;Happy query hunting!&lt;/p&gt;
 </description>
     </item>
     

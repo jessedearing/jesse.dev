@@ -1,30 +1,31 @@
 +++
 date = "2016-09-16T01:11:56-07:00"
 description = ""
-title = "Who's Running That on my System"
+title = "Who’s Running that on my System: Case of the stolen CPU"
+draft = false
 tags = ["systems", "Golang", "Linux", "databases", "MySQL"]
-hidden = true
 +++
 
 Last week, I found myself needing to find what application a query was originating from.
 My typical method for doing this is searching through source code before I
-eventually get angry that I can't find the query originating from an ORM and
+eventually get angry that I can’t find the query originating from an ORM and
 start drafting an email decreeing that all applications get distinct logins to
-the database that I'll never send because who is going to listen anyway.
+the database that I’ll never send because who is going to listen anyway.
 
 I had an idea for how I can track a query all the way back to the process that
 accessed it and I even scripted it.
 
-### Connections
+## Connections
+
 In MySQL every connection is mapped to a thread and each thread has an ID. When
-you run `SHOW PROCESSLIST` in MySQL you can see **all** the running processes.
-The information for this comes from the `processlist` table in the
-`information_schema` database. This table also lists the host and the
-_ephemeral_ port of the connection. The ephemeral port exists on the client
-(initiating) side of a TCP connection. So if you see a query running by using a
-tool like `mytop` and you're able to capture the thread ID you can be pretty
-sure that the connection is still open because TCP connections are expensive and
-most libraries try to pool them and reuse them.
+you run SHOW PROCESSLIST in MySQL you can see all the running processes. The
+information for this comes from the processlist table in the information_schema
+database. This table also lists the host and the ephemeral port of the
+connection. The ephemeral port exists on the client (initiating) side of a TCP
+connection. So if you see a query running by using a tool like mytop and you’re
+able to capture the thread ID you can be pretty sure that the connection is
+still open because TCP connections are expensive and most libraries try to pool
+them and reuse them.
 
 Here is the section of the Go program I wrote to capture the host and the port.
 ```go
@@ -61,14 +62,15 @@ func getHost(db *sql.DB) string {
 }
 ```
 
-### Hunting down the connection
+## Hunting down the connection
+
 Once you have the host and port you can then ssh into the host that you were
 given to find what process is connected to the port. This can be discovered
 using a program like lsof. There are many ways to find the port a process is
 using but I am most familiar with lsof.
 
 The Go code to SSH into a server uses the golang.org/x/crypto/ssh library and
-I've incorporated some of my knowledge of bash.
+I’ve incorporated some of my knowledge of bash.
 ```go
 sshClient, err := setUpSSHClient(host)
 if err != nil {
@@ -129,9 +131,15 @@ func runCmd(client *ssh.Client, command string) (string, error) {
 	return string(b), nil
 }
 ```
+## Conclusion
 
-### Conclusion
-Once you have found the process you can then figure out what codebase a query
-originated from, you can do evil (and potentially informative) things like run
-strace, jstack, or gdb to diagnose issues (I wouldn't recommend doing this in
-production). Happy query hunting!
+This helped me find the process that was running the problematic query. I was
+able to find what codebase was causing the issue and thus the team that owns
+that codebase. It turns out they were in the middle of a deploy to fix the
+problem because they noticed it right before I did.
+
+Once you have found the process you can you can also other informative things
+like run strace, jstack, or gdb to diagnose issues (I wouldn’t recommend doing
+this in production).
+
+Happy query hunting!

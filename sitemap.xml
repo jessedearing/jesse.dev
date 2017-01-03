@@ -2,6 +2,16 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://jessed.io/post/20161019-Fixed-vs-Growth-System-Failures/</loc>
+    <lastmod>2016-10-19T11:06:08-08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://jessed.io/post/20161004-Go-is-for-Closers/</loc>
+    <lastmod>2016-10-04T10:35:32-08:00</lastmod>
+  </url>
+  
+  <url>
     <loc>http://jessed.io/post/20160916-Whos-running-that-on-my-system/</loc>
     <lastmod>2016-09-16T01:11:56-07:00</lastmod>
   </url>
@@ -13,7 +23,7 @@
   
   <url>
     <loc>http://jessed.io/</loc>
-    <lastmod>2016-09-16T01:11:56-07:00</lastmod>
+    <lastmod>2016-10-19T11:06:08-08:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -24,8 +34,20 @@
   </url>
   
   <url>
+    <loc>http://jessed.io/tags/devops/</loc>
+    <lastmod>2016-10-19T11:06:08-08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
     <loc>http://jessed.io/tags/golang/</loc>
-    <lastmod>2016-09-16T01:11:56-07:00</lastmod>
+    <lastmod>2016-10-04T10:35:32-08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://jessed.io/tags/growth-mindset/</loc>
+    <lastmod>2016-10-19T11:06:08-08:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -42,8 +64,20 @@
   </url>
   
   <url>
+    <loc>http://jessed.io/tags/postmortem/</loc>
+    <lastmod>2016-10-19T11:06:08-08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
     <loc>http://jessed.io/post/</loc>
-    <lastmod>2016-09-16T01:11:56-07:00</lastmod>
+    <lastmod>2016-10-19T11:06:08-08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://jessed.io/tags/software-development/</loc>
+    <lastmod>2016-10-19T11:06:08-08:00</lastmod>
     <priority>0</priority>
   </url>
   

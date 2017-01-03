@@ -1,0 +1,408 @@
+    <!DOCTYPE html>
+<html lang="en-us">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="author" content="Jesse Dearing">
+		<meta name="description" content="Personal blog of Jesse Dearing discussing programming in Go and JavaScript as well as systems, cloud technologies, and databases.">
+		<meta name="generator" content="Hugo 0.18" />
+		<title>Fixed vs. Growth System Failures &middot; </title>
+		<link rel="shortcut icon" href="http://jessed.io/images/favicon.ico">
+		<link rel="stylesheet" href="http://jessed.io/css/style.css">
+		<link rel="stylesheet" href="http://jessed.io/css/highlight.css">
+		
+
+		
+		<link rel="stylesheet" href="http://jessed.io/css/monosocialiconsfont.css">
+		
+
+		
+		<link href="http://jessed.io/index.xml" rel="alternate" type="application/rss+xml" title="" />
+		
+
+		<meta property="og:title" content="Fixed vs. Growth System Failures" />
+<meta property="og:description" content="The concept of Mindset based on the work: Mindset by Dr. Carol S. Dweck, Ph.D. has been around for some time now, but recently I was thinking about root cause analyses meant as a tool for learning. Revisiting the John Allspaw post: The Infinite Hows (or, the Dangers Of The Five Whys) make me start thinking about what makes a lot of people look at postmortems as a checkbox or paperwork and not value them as learning experiences." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://jessed.io/post/20161019-Fixed-vs-Growth-System-Failures/" />
+
+
+<meta property="og:updated_time" content="2016-10-19T11:06:08-08:00"/>
+
+
+
+
+
+
+
+
+
+
+	    
+	    
+<meta itemprop="name" content="Fixed vs. Growth System Failures">
+<meta itemprop="description" content="The concept of Mindset based on the work: Mindset by Dr. Carol S. Dweck, Ph.D. has been around for some time now, but recently I was thinking about root cause analyses meant as a tool for learning. Revisiting the John Allspaw post: The Infinite Hows (or, the Dangers Of The Five Whys) make me start thinking about what makes a lot of people look at postmortems as a checkbox or paperwork and not value them as learning experiences.">
+
+
+<meta itemprop="dateModified" content="2016-10-19T11:06:08-08:00" />
+<meta itemprop="wordCount" content="1236">
+
+
+
+<meta itemprop="keywords" content="databases,devops,golang,growth-mindset,linux,mysql,postmortem,software-development,systems," />
+
+	    
+
+  <meta name="twitter:card" content="summary"/>
+
+
+
+<meta name="twitter:title" content="Fixed vs. Growth System Failures"/>
+<meta name="twitter:description" content="The concept of Mindset based on the work: Mindset by Dr. Carol S. Dweck, Ph.D. has been around for some time now, but recently I was thinking about root cause analyses meant as a tool for learning. Revisiting the John Allspaw post: The Infinite Hows (or, the Dangers Of The Five Whys) make me start thinking about what makes a lot of people look at postmortems as a checkbox or paperwork and not value them as learning experiences."/>
+<meta name="twitter:site" content="@https://www.twitter.com/JesseDearing"/>
+
+
+	</head>
+
+    <body>
+       <nav class="main-nav">
+	
+	
+		<a href='http://jessed.io/'> <span class="arrow">←</span>Home</a>
+	
+
+	
+		<a href='http://jessed.io/about'>About</a>
+	
+
+	
+	<a class="cta" href="http://jessed.io/index.xml">Subscribe</a>
+	
+</nav>
+
+        <section id="wrapper">
+            <article class="post">
+                <header>
+                    <h1>Fixed vs. Growth System Failures</h1>
+                    <h2 class="headline">
+                    October 19, 2016 
+                    <br>
+                    
+                    
+                        
+                            <a href="http://jessed.io/tags/growth-mindset">Growth Mindset</a>
+                        
+                            <a href="http://jessed.io/tags/postmortem">Postmortem</a>
+                        
+                            <a href="http://jessed.io/tags/devops">DevOps</a>
+                        
+                            <a href="http://jessed.io/tags/software-development">Software Development</a>
+                        
+                    
+                    
+                    </h2>
+                </header>
+                <section id="post-body">
+                    
+
+<p>The concept of Mindset based on the work: <a href="http://amzn.to/2dEPR9M">Mindset by Dr. Carol S. Dweck,
+Ph.D.</a>
+has been around for some time now, but recently I was thinking about root cause
+analyses meant as a tool for learning. Revisiting the John Allspaw post: The
+<a href="http://www.kitchensoap.com/2014/11/14/the-infinite-hows-or-the-dangers-of-the-five-whys/">Infinite Hows (or, the Dangers Of The Five
+Whys)</a> make me start thinking about
+what makes a lot of people look at postmortems as a checkbox or paperwork and
+not value them as learning experiences.</p>
+
+<h2 id="mindsets">Mindsets</h2>
+
+<p>Mindsets are how people view qualities related to their own abilities. There are
+two types of mindsets: fixed and growth.</p>
+
+<p>A fixed mindset views abilities as fixed traits that have a finite limit. A
+person with a fixed mindset tends to think that challenges should be avoided and
+can give up easily; effort is unnecessary because their ability is a known
+quality.</p>
+
+<p>In contrast to a fixed mindset, a growth mindset believes that abilities can be
+developed and a person&rsquo;s full potential cannot be known because there is no end
+to developing traits. A person with a growth mindset tends to think that
+challenges can be embraced because the potential to grow is greater; effort
+leads to greater understanding.</p>
+
+<p>I tend to see a growth mindset with engineers in tech when approaching software
+development. Engineers in tech, in general, have to have a growth mindset
+because there&rsquo;s always a new language, framework, service, system, etc. to
+learn. However, when bad things happen in production on a lot of teams will
+approach the postmortem with a fixed mindset.</p>
+
+<h2 id="qualities-of-a-fixed-mindset-rca">Qualities of a Fixed Mindset RCA</h2>
+
+<p><strong>Fixed Mindset Quality #1:</strong> The root cause asserts blame.</p>
+
+<blockquote>
+<p>When cloud/infrastructure provider x has an outage and our software is
+unavailable as a result.</p>
+</blockquote>
+
+<p>A fixed mindset will assert blame for a failure. This is usually because an RCA
+is perceived as a tool for finding fault.</p>
+
+<p><strong>Fixed Mindset Quality #2:</strong> The root cause is an admission of failure.</p>
+
+<p>I&rsquo;ve heard the answer in many postmortem meetings that &ldquo;I did this&rdquo; or &ldquo;an
+engineer acted on the system&rdquo;. It implies that the engineer who pushed the
+button caused the failure.</p>
+
+<blockquote>
+<p>Q: How do we prevent the issue that caused the outage from happening again?<br />
+A: Engineers need to do a better job.</p>
+</blockquote>
+
+<p><strong>Fixed Mindset Quality #3:</strong> The root cause is extraneous paperwork.</p>
+
+<p>Organizations will sometimes put the requirement that a software engineering
+team conduct a root cause analysis before they can release again. This is
+generally a good practice, but if RCAs are approached with a fixed mindset the
+RCA is viewed as red tape, paperwork, or some sort of bureaucratic checkbox.</p>
+
+<p><strong>Fixed Mindset Quality #4:</strong> The postmortem lacks follow-up actions</p>
+
+<p>A fixed mindset perspective views each incident as isolated and based on a
+mistake and being more careful next time will prevent another outage.</p>
+
+<h2 id="qualities-of-a-growth-mindset-rca">Qualities of a Growth Mindset RCA</h2>
+
+<p><strong>Growth Mindset Quality #1:</strong> The root cause asserts responsibility.</p>
+
+<blockquote>
+<p>Cloud/infrastructure provider x had an outage and our software does not
+handle the case when y service is not available.</p>
+</blockquote>
+
+<p>A growth mindset will see faults as something that can be fixed and improved.
+The growth mindset views RCAs as a tool for understanding and improvement.</p>
+
+<p><strong>Growth Mindset Quality #2:</strong> The root cause is an opportunity to learn.</p>
+
+<p>A growth mindset will explore the deeper understanding of what happened and the
+circumstances. This implies that the engineer is an actor in a larger systemic
+problem and not simply a single cause.</p>
+
+<p><strong>Growth Mindset Quality #3:</strong> The root cause is a necessary learning opportunity.</p>
+
+<p>A growth mindset will conduct a postmortem without it being a required
+activity. The learning opportunity is valuable and a growth mindset will view
+it as a way for all parties involved to learn more about the system under
+review. Typically a growth mindset will value reading RCAs out of interest and
+curiosity.</p>
+
+<p><strong>Growth Mindset Quality #4:</strong> The postmortem has many follow-up actions.</p>
+
+<p>After a postmortem has taken place, a growth mindset will have at least 2
+possibly 3 follow-up actions as the postmortem should have created a way for
+teams to collaborate and provided a venue for solving problems and finding
+innovative ways to prevent problems.</p>
+
+<h2 id="methods-for-growth-mindset-postmortems">Methods for Growth Mindset Postmortems</h2>
+
+<p><strong>Almost all questions should begin with &ldquo;what&rdquo; or &ldquo;how&rdquo; and seldom should they
+begin with &ldquo;why&rdquo;.</strong></p>
+
+<p>Why tends to be the wrong question more often than not. Why tends to lead to pointing fingers at people or systems and doesn&rsquo;t tend to understand the <em>actual</em> cause of the event.</p>
+
+<p>For example, &ldquo;Why did a bug ship to production?&rdquo; vs. &ldquo;How did a bug ship to production?&rdquo;. Why would lead you to a response similar to &ldquo;because the team didn&rsquo;t test it&rdquo;. How would lead you to a response similar to &ldquo;because the tests did not catch it.&rdquo;</p>
+
+<p><strong>Hindsight is <sup>20</sup>&frasl;<sub>20</sub> so remember the actions that cause an incident are obvious
+now, but may not have been obvious during the incident.</strong></p>
+
+<p>A postmortem can&rsquo;t focus on what should have been done, but rather what was done
+and, based on that, how the software or the system can be changed to prevent
+failures. At a postmortem you typically have a better idea of what went wrong
+and can look at an event and say &ldquo;yep, we shouldn&rsquo;t have done that&rdquo; but that
+brings present context into a past event. At the time, the causes of the event
+happened because something was perceived to be not dangerous.</p>
+
+<p><strong>Reinforce accountability without reinforcing blame.</strong></p>
+
+<p>It&rsquo;s okay for a retrospective to come up with a set of action items that teams
+and other people and teams are accountable for, but remember that everyone is
+on the same &ldquo;team&rdquo;. The goal is to improve the system, learn more as engineers,
+and share the knowledge. Blaming failures on yourself, other engineers, other
+teams, technologies, frameworks, etc. will not help anyone grow.</p>
+
+<blockquote>
+<p>The x feature of this language&rsquo;s core library is a mess and causes y issue.</p>
+</blockquote>
+
+<p>Even if the description of the issue was well formed (which it tends not to be) the lead into it absolves the team of accountability.</p>
+
+<blockquote>
+<p>The team was not aware at the time that the x feature of the language&rsquo;s core library would cause y issue.</p>
+</blockquote>
+
+<p>This indicates that the the team has acknowledged the gap in understanding and sets up describing a follow up action easily and shares knowledge of the issue at hand.</p>
+
+<h2 id="feed-your-growth-mindset-postmortems">Feed your Growth Mindset postmortems</h2>
+
+<p>Be a consumer of postmortems. There are a lot of public postmortems out there
+because a lot of companies have run into very non-obvious problems with
+technologies integrated into a system.</p>
+
+<p>Here are a couple of my favorite postmortems:</p>
+
+<ul>
+<li><a href="https://www.joyent.com/blog/manta-postmortem-7-27-2015">https://www.joyent.com/blog/manta-postmortem-7-27-2015</a><br />
+Joyent&rsquo;s postmortem had a lot of reflection and I learned a lot reading it. I
+can only imagine how much the engineering teams learned from the postmortem.</li>
+<li><a href="https://github.com/blog/1261-github-availability-this-week">https://github.com/blog/1261-github-availability-this-week</a><br />
+Github&rsquo;s postmortem from 2012 is my first exposure to failure in distributed
+system failures and really got me thinking about to what extent a failure of a
+distributed system could mean.
+<br />
+<br /></li>
+</ul>
+
+<p>You don&rsquo;t have to share your postmortems publicly to get people motivated.
+Internally at the company you work at, you should share your postmortems across
+your engineering organization; A wiki is a good medium for this. Embracing the
+Growth Mindset means accepting feedback on your postmortems you publish and
+looking to learn from others. What happened to team X? How did they fix it? How
+will they keep it from happening again?</p>
+
+                </section>
+            </article>
+            <footer id="post-meta" class="clearfix">
+                <a href="https://twitter.com/JesseDearing">
+                        <img class="avatar" src="http://jessed.io/images/avatar.png">
+                        <div>
+                            <span class="dark">Jesse Dearing</span>
+                            <span></span>
+                        </div>
+                    </a>
+                <section id="sharing">
+                    <a class="twitter" href="https://twitter.com/intent/tweet?text=http%3a%2f%2fjessed.io%2fpost%2f20161019-Fixed-vs-Growth-System-Failures%2f - Fixed%20vs.%20Growth%20System%20Failures by @JesseDearing"><span class="icon-twitter"> Tweet</span></a>
+
+<a class="facebook" href="#" onclick="
+    window.open(
+      'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+      'facebook-share-dialog',
+      'width=626,height=436');
+    return false;"><span class="icon-facebook-rect"> Share</span>
+</a>
+
+                </section>
+            </footer>
+
+            
+
+            <ul id="post-list" class="archive readmore">
+    <h3>Read more</h3>
+    
+    
+        
+        <li>
+            <a href="http://jessed.io/post/20161019-Fixed-vs-Growth-System-Failures/">Fixed vs. Growth System Failures<aside class="dates">Oct 19</aside></a>
+        </li>
+        
+   
+    
+        
+        <li>
+            <a href="http://jessed.io/post/20161004-Go-is-for-Closers/">Go is for .Close()’ers<aside class="dates">Oct 4</aside></a>
+        </li>
+        
+   
+    
+        
+        <li>
+            <a href="http://jessed.io/post/20160916-Whos-running-that-on-my-system/">Who’s Running that on my System: Case of the stolen CPU<aside class="dates">Sep 16</aside></a>
+        </li>
+        
+   
+    
+        
+   
+    
+        
+        <li>
+            <a href="http://jessed.io/"><aside class="dates">Oct 19</aside></a>
+        </li>
+        
+   
+    
+        
+        <li>
+            <a href="http://jessed.io/tags/databases/">Databases<aside class="dates">Sep 16</aside></a>
+        </li>
+        
+   
+    
+        
+        <li>
+            <a href="http://jessed.io/tags/devops/">Devops<aside class="dates">Oct 19</aside></a>
+        </li>
+        
+   
+    
+        
+        <li>
+            <a href="http://jessed.io/tags/golang/">Golang<aside class="dates">Oct 4</aside></a>
+        </li>
+        
+   
+    
+        
+        <li>
+            <a href="http://jessed.io/tags/growth-mindset/">Growth Mindset<aside class="dates">Oct 19</aside></a>
+        </li>
+        
+   
+    
+        
+        <li>
+            <a href="http://jessed.io/tags/linux/">Linux<aside class="dates">Sep 16</aside></a>
+        </li>
+        
+   
+</ul>
+            <footer id="footer">
+    
+        <div id="social">
+
+	
+	
+    
+    <a class="symbol" href="https://www.github.com/jessedearing">
+        circlegithub
+    </a>
+    
+    <a class="symbol" href="https://www.twitter.com/JesseDearing">
+        circletwitterbird
+    </a>
+    
+
+
+</div>
+
+    
+    <p class="small">
+    
+        © Copyright 2017 Jesse Dearing
+    
+    </p>
+</footer>
+
+        </section>
+
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script src="http://jessed.io/js/main.js"></script>
+<script src="http://jessed.io/js/highlight.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+
+
+
+
+    </body>
+</html>

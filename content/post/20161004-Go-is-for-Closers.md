@@ -2,7 +2,7 @@
 date = "2016-10-04T10:35:32-08:00"
 description = ""
 title = "Go is for .Close()’ers"
-tags = ["Golang", "programming"]
+tags = ["Golang", "Software Development"]
 +++
 
 In Go the typical way to open a file or connection is this commonly seen block

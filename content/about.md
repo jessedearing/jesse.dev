@@ -4,7 +4,7 @@ description = ""
 title = "About me"
 
 +++
-I am a senior site reliability engineer at InVisionApp with over 8 years of
+I am a lead software engineer at InVisionApp with over 8 years of
 experience. I love databases and the technology that make databases run, but I
 also have experience with Docker and technologies designed around Linux
 containers, AWS, architecture, microservices, monitoring, and automation.

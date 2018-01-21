@@ -1,5 +1,5 @@
 # Site settings
-baseurl = "http://jessed.io/"
+baseurl = "https://jessed.io/"
 languageCode = "en-us"
 title = ""
 theme = "hugo-cactus-theme"
@@ -9,6 +9,7 @@ googleAnalytics = ""
 disqusShortname = ""
 
 [params]
+	uglyurls = true
 	name = "Jesse Dearing"
 	description = "Personal blog of Jesse Dearing discussing programming in Go and JavaScript as well as systems, cloud technologies, and databases."
 	bio = "Data - Systems - Code"

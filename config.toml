@@ -1,7 +1,7 @@
 # Site settings
 baseurl = "https://jessed.io/"
 languageCode = "en-us"
-title = "Data - Systems - Code"
+title = "SRE - Data - Systems - Code"
 theme = "hugo-cactus-theme"
 # Enter your tracking code to enable Google Analytics
 googleAnalytics = ""
@@ -11,8 +11,8 @@ disqusShortname = ""
 [params]
 	uglyurls = true
 	name = "Jesse Dearing"
-	description = "Personal blog of Jesse Dearing discussing programming in Go and JavaScript as well as systems, cloud technologies, and databases."
-	bio = "Data - Systems - Code"
+	description = "Personal blog of Jesse Dearing discussing programming in Go and other languages as well as distributed systems, cloud technologies, and DevOps/SRE methodologies."
+	bio = "SRE - Data - Systems - Code"
 	# Enter optionally your twitter account
 	twitter = "JesseDearing"
 	enableRSS = true

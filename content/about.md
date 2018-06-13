@@ -4,13 +4,19 @@ description = ""
 title = "About me"
 
 +++
-I am a lead software engineer at InVisionApp with over 8 years of
-experience. I love databases and the technology that make databases run, but I
-also have experience with Docker and technologies designed around Linux
-containers, AWS, architecture, microservices, monitoring, and automation.
+I am a lead site reliability engineer at InVisionApp with over 8 years of
+experience. I love building platforms to support running resilient software in
+production.
+
+I love taking existing services and writing intelligent code to support the
+operations of those services. I have experience with Docker and technologies
+designed around Linux containers, AWS, cloud native architectures,
+microservices, monitoring, and automation.
 
 While I write code mostly in Go and Python. I have been known to get into
 Java, C, and Ruby to get things done. I love contributing to Open Source.
 
 In my free time I like to try microbrews, ride bicycles, and spend time with my
 family.
+
+[Resumé](https://jessed.io/resume)

@@ -1,6 +1,7 @@
 ---
 title: "Complex Adaptive Systems in Software"
 date: 2018-06-13T16:57:00-07:00
+tags: ["Complex Systems", "Resilience", "SRE", "Software Development"]
 ---
 
 Resilience engineering is becoming a required practice as people begin to expect

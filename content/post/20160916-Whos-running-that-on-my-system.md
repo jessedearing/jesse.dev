@@ -2,7 +2,6 @@
 date = "2016-09-16T01:11:56-07:00"
 description = ""
 title = "Who’s Running that on my System: Case of the stolen CPU"
-draft = false
 tags = ["systems", "Golang", "Linux", "databases", "MySQL"]
 +++
 

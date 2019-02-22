@@ -1,5 +1,5 @@
 # Site settings
-baseurl = "https://jessed.io/"
+baseurl = "https://jesse.dev/"
 languageCode = "en-us"
 title = "SRE - Data - Systems - Code"
 theme = "hugo-cactus-theme"

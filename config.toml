@@ -11,14 +11,17 @@ disqusShortname = ""
 [params]
 	uglyurls = true
 	name = "Jesse Dearing"
-	description = "Personal blog of Jesse Dearing discussing programming in Go and other languages as well as distributed systems, cloud technologies, and DevOps/SRE methodologies."
-	bio = "SRE - Data - Systems - Code"
+	description = "My personal blog where I talk about site reliability engineering, DevOps, Go, and software systems."
+	bio = "My personal blog where I talk about site reliability engineering, DevOps, Go, and software systems."
 	# Enter optionally your twitter account
 	twitter = "JesseDearing"
 	enableRSS = true
+  enableSummary = true
+
+  enableTOC = true
 
 	# Add custom assets with their paths relative to the static folder
-	customCSS = []
+	customCSS = ['../jessedev.css']
 	customJS  = []
 
 	# The variables below are optionally too and can be used to

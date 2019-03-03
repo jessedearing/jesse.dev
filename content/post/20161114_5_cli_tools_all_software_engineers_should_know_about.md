@@ -9,6 +9,7 @@ The following CLI tools, I have found to be extremely useful when dealing with
 systems to quickly find the information I need. Please note that all these
 commands are being run from OS X and are the BSD commands not the GNU commands
 that typically ship with a standard Linux distro.
+<!--more-->
 
 ## 5. xargs
 xargs simply takes strings separated by whitespace and passes those into the

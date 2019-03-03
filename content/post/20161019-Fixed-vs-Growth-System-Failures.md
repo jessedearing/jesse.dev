@@ -13,6 +13,7 @@ analyses meant as a tool for learning. Revisiting the John Allspaw post: The
 Whys)](http://www.kitchensoap.com/2014/11/14/the-infinite-hows-or-the-dangers-of-the-five-whys/) make me start thinking about
 what makes a lot of people look at postmortems as a checkbox or paperwork and
 not value them as learning experiences.
+<!--more-->
 
 ## Mindsets
 Mindsets are how people view qualities related to their own abilities. There are

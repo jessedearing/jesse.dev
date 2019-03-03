@@ -5,6 +5,10 @@ title = "Go is for .Close()’ers"
 tags = ["Golang", "Software Development"]
 +++
 
+The `Close()` method is important to the reliability of a running program and
+it's not easy to tell when it should be used.
+<!--more-->
+
 In Go the typical way to open a file or connection is this commonly seen block
 of code:
 ```go

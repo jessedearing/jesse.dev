@@ -8,6 +8,7 @@ Resilience engineering is becoming a required practice as people begin to expect
 services to be available nearly 100% of the time. We have the same requirements
 of the systems that sustain us: ecosystems, anatomical systems. Our world is one
 complex adaptive system after another.
+<!--more-->
 
 If you consider our anatomy, we have redundant systems: 2 lungs, 2 kidneys, 2
 halves of the brain, 2 arms, 2 legs, etc. In cases where one of the components

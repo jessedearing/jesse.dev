@@ -4,7 +4,7 @@ description = ""
 title = "About me"
 
 +++
-I am a senior site reliability engineer at VMware nearly a decade of
+I am a senior site reliability engineer at VMware with nearly a decade of
 professional experience. I love building platforms to support running resilient
 software in production.
 

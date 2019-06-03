@@ -16,5 +16,4 @@ microservices, monitoring, and automation.
 While I write code mostly in Go and Python. I have been known to get into
 Java, C, and Ruby to get things done. I love contributing to Open Source.
 
-In my free time I like to try microbrews, ride bicycles, and spend time with my
-family.
+I live in Portland, OR and in my free time I like to try microbrews, ride bicycles, and spend time with my family.

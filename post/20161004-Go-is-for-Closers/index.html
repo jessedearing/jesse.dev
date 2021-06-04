@@ -1,0 +1,328 @@
+    <!DOCTYPE html>
+<html lang="en-us">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="author" content="Jesse Dearing">
+		<meta name="description" content="Personal blog of Jesse Dearing discussing programming in Go and JavaScript as well as systems, cloud technologies, and databases.">
+		<meta name="generator" content="Hugo 0.18" />
+		<title>Go is for .Close()’ers &middot; </title>
+		<link rel="shortcut icon" href="http://jessed.io/images/favicon.ico">
+		<link rel="stylesheet" href="http://jessed.io/css/style.css">
+		<link rel="stylesheet" href="http://jessed.io/css/highlight.css">
+		
+
+		
+		<link rel="stylesheet" href="http://jessed.io/css/monosocialiconsfont.css">
+		
+
+		
+		<link href="http://jessed.io/index.xml" rel="alternate" type="application/rss+xml" title="" />
+		
+
+		<meta property="og:title" content="Go is for .Close()’ers" />
+<meta property="og:description" content="In Go the typical way to open a file or connection is this commonly seen block of code:
+connection, err := net.Dial(&quot;tcp&quot;, &quot;example.com:80&quot;) if err != nil { // Do something to handle the error return } defer connection.Close()  That defer connection.Close() on line 6 plays a vital role in writing Go code that won’t run your host machine out of memory, kernel file descriptors, or any other transactional resource (one in which operations open, do something, then close)." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://jessed.io/post/20161004-Go-is-for-Closers/" />
+
+
+<meta property="og:updated_time" content="2016-10-04T10:35:32-08:00"/>
+
+
+
+
+
+
+
+
+
+
+	    
+	    
+<meta itemprop="name" content="Go is for .Close()’ers">
+<meta itemprop="description" content="In Go the typical way to open a file or connection is this commonly seen block of code:
+connection, err := net.Dial(&quot;tcp&quot;, &quot;example.com:80&quot;) if err != nil { // Do something to handle the error return } defer connection.Close()  That defer connection.Close() on line 6 plays a vital role in writing Go code that won’t run your host machine out of memory, kernel file descriptors, or any other transactional resource (one in which operations open, do something, then close).">
+
+
+<meta itemprop="dateModified" content="2016-10-04T10:35:32-08:00" />
+<meta itemprop="wordCount" content="576">
+
+
+
+<meta itemprop="keywords" content="command-line,databases,devops,golang,growth-mindset,linux,mysql,operating-systems,postmortem,software-development,system-administration,systems," />
+
+	    
+
+  <meta name="twitter:card" content="summary"/>
+
+
+
+<meta name="twitter:title" content="Go is for .Close()’ers"/>
+<meta name="twitter:description" content="In Go the typical way to open a file or connection is this commonly seen block of code:
+connection, err := net.Dial(&quot;tcp&quot;, &quot;example.com:80&quot;) if err != nil { // Do something to handle the error return } defer connection.Close()  That defer connection.Close() on line 6 plays a vital role in writing Go code that won’t run your host machine out of memory, kernel file descriptors, or any other transactional resource (one in which operations open, do something, then close)."/>
+<meta name="twitter:site" content="@https://www.twitter.com/JesseDearing"/>
+
+
+	</head>
+
+    <body>
+       <nav class="main-nav">
+	
+	
+		<a href='http://jessed.io/'> <span class="arrow">←</span>Home</a>
+	
+
+	
+		<a href='http://jessed.io/about'>About</a>
+	
+
+	
+	<a class="cta" href="http://jessed.io/index.xml">Subscribe</a>
+	
+</nav>
+
+        <section id="wrapper">
+            <article class="post">
+                <header>
+                    <h1>Go is for .Close()’ers</h1>
+                    <h2 class="headline">
+                    October 4, 2016 
+                    <br>
+                    
+                    
+                        
+                            <a href="http://jessed.io/tags/golang">Golang</a>
+                        
+                            <a href="http://jessed.io/tags/software-development">Software Development</a>
+                        
+                    
+                    
+                    </h2>
+                </header>
+                <section id="post-body">
+                    
+
+<p>In Go the typical way to open a file or connection is this commonly seen block
+of code:</p>
+
+<pre><code class="language-go">connection, err := net.Dial(&quot;tcp&quot;, &quot;example.com:80&quot;)
+if err != nil {
+    // Do something to handle the error
+    return
+}
+defer connection.Close()
+</code></pre>
+
+<p>That <code>defer connection.Close()</code> on line 6 plays a vital role in writing Go code
+that won’t run your host machine out of memory, kernel file descriptors, or any
+other transactional resource (one in which operations open, do something, then
+close). All that does is put the function call on a stack that is called in LIFO
+(<em>Ed. originally wrote FIFO</em>) order after the code goes out of scope. This post
+aims to focus on the <code>Close()</code> method though.</p>
+
+<h2 id="the-interfaces-are-weak">The interfaces are weak?!</h2>
+
+<p>Go has interfaces explicit interfaces that define a close method. The IO package
+has a lot of them (all composing the Closer interface): ReadCloser, WriteCloser,
+and ReadWriteCloser. Each of these indicate a struct that needs to be closed
+when you’ve written or read everything or decided you’ve written or read enough.</p>
+
+<p>Not everything that needs to be closed is so obviously named though. The
+“database/sql” package just has a DB struct that has a Close method. Also in the
+same package the Stmt type and Rows type has a Close method.</p>
+
+<p>In other cases, the Close method is even further obscured by not being a part of
+a defined type in the package. This is used in the “http” package all over the
+place. The Body attribute in the Response struct is an io.ReadCloser.</p>
+
+<h2 id="abc-always-be-closing">ABC — Always Be Closing</h2>
+
+<p>In Go, closing is important and defers we’re built to group closes with their
+definition. In other languages there is usually a syntax for closing a
+connection at the end of a block. In Java, it looks like this:</p>
+
+<pre><code class="language-java">try(FileInputStream input = new FileInputStream(“file.txt”)) {
+  int data = input.read();
+  while(data != -1) {
+    System.out.print((char) data);
+    data = input.read();
+  }
+}
+</code></pre>
+
+<p>Here’s the example in Ruby:</p>
+
+<pre><code class="language-ruby">File.open(‘hello.txt’, ‘r’) do |f|
+ while line = f.gets
+   puts line
+ end
+end
+</code></pre>
+
+<p>In Go we get defers. They’re fine I guess, but it does mean that we don’t get
+the luxury of knowing how to Close a resource without reading the documentation.</p>
+
+<p><strong>If you do not read the documentation for the resource you are about to use it
+could mean disaster</strong>. For example, this gem from the &ldquo;net/http&rdquo; package docs:</p>
+
+<blockquote>
+<p>The default HTTP client’s Transport does not attempt to reuse HTTP/1.0 or
+HTTP/1.1 TCP connections (“keep-alive”) unless the Body is read to completion
+and is closed.</p>
+</blockquote>
+
+<p>Also in the aforementioned &ldquo;database/sql&rdquo; package if you forget to close Stmt in
+MySQL this causes your Go program to allocate 16,382 prepared statements for the
+connection you are using and then your Go program will be unable to allocate
+prepared statements until your connection restarts.</p>
+
+<p>At a basic level, eventually you will exhaust the number of file descriptors you
+are allowed by the kernel. Files can be on disk files but also TCP sockets in a
+Linux system.</p>
+
+<h2 id="only-one-thing-matters">Only one thing matters</h2>
+
+<p>Read the docs look for a Close method, look for a struct name that ends in
+Closer. When you review code, make sure that resources have a defer with a Close
+method. Dealing with resources is something we do as engineers who write code
+that run in production so we have to remember that they are managed, finite, and
+must be released to the system when the program is done with them.</p>
+
+                </section>
+            </article>
+            <footer id="post-meta" class="clearfix">
+                <a href="https://twitter.com/JesseDearing">
+                        <img class="avatar" src="http://jessed.io/images/avatar.png">
+                        <div>
+                            <span class="dark">Jesse Dearing</span>
+                            <span></span>
+                        </div>
+                    </a>
+                <section id="sharing">
+                    <a class="twitter" href="https://twitter.com/intent/tweet?text=http%3a%2f%2fjessed.io%2fpost%2f20161004-Go-is-for-Closers%2f - Go%20is%20for%20.Close%28%29%e2%80%99ers by @JesseDearing"><span class="icon-twitter"> Tweet</span></a>
+
+<a class="facebook" href="#" onclick="
+    window.open(
+      'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+      'facebook-share-dialog',
+      'width=626,height=436');
+    return false;"><span class="icon-facebook-rect"> Share</span>
+</a>
+
+                </section>
+            </footer>
+
+            
+
+            <ul id="post-list" class="archive readmore">
+    <h3>Read more</h3>
+    
+    
+        
+        <li>
+            <a href="http://jessed.io/post/20161114_5_cli_tools_all_software_engineers_should_know_about/">5 CLI Tools all software engineers should know about<aside class="dates">Nov 14</aside></a>
+        </li>
+        
+   
+    
+        
+        <li>
+            <a href="http://jessed.io/post/20161019-Fixed-vs-Growth-System-Failures/">Fixed vs. Growth System Failures<aside class="dates">Oct 19</aside></a>
+        </li>
+        
+   
+    
+        
+        <li>
+            <a href="http://jessed.io/post/20161004-Go-is-for-Closers/">Go is for .Close()’ers<aside class="dates">Oct 4</aside></a>
+        </li>
+        
+   
+    
+        
+        <li>
+            <a href="http://jessed.io/post/20160916-Whos-running-that-on-my-system/">Who’s Running that on my System: Case of the stolen CPU<aside class="dates">Sep 16</aside></a>
+        </li>
+        
+   
+    
+        
+   
+    
+        
+        <li>
+            <a href="http://jessed.io/"><aside class="dates">Nov 14</aside></a>
+        </li>
+        
+   
+    
+        
+        <li>
+            <a href="http://jessed.io/tags/command-line/">Command Line<aside class="dates">Nov 14</aside></a>
+        </li>
+        
+   
+    
+        
+        <li>
+            <a href="http://jessed.io/tags/databases/">Databases<aside class="dates">Sep 16</aside></a>
+        </li>
+        
+   
+    
+        
+        <li>
+            <a href="http://jessed.io/tags/devops/">Devops<aside class="dates">Oct 19</aside></a>
+        </li>
+        
+   
+    
+        
+        <li>
+            <a href="http://jessed.io/tags/golang/">Golang<aside class="dates">Oct 4</aside></a>
+        </li>
+        
+   
+</ul>
+            <footer id="footer">
+    
+        <div id="social">
+
+	
+	
+    
+    <a class="symbol" href="https://www.github.com/jessedearing">
+        circlegithub
+    </a>
+    
+    <a class="symbol" href="https://www.twitter.com/JesseDearing">
+        circletwitterbird
+    </a>
+    
+
+
+</div>
+
+    
+    <p class="small">
+    
+        © Copyright 2017 Jesse Dearing
+    
+    </p>
+</footer>
+
+        </section>
+
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script src="http://jessed.io/js/main.js"></script>
+<script src="http://jessed.io/js/highlight.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+
+
+
+
+    </body>
+</html>

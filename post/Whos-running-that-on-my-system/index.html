@@ -1,0 +1,273 @@
+    <!DOCTYPE html>
+<html lang="en-us">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="author" content="Jesse Dearing">
+		<meta name="description" content="Personal blog of Jesse Dearing discussing programming in Go and JavaScript as well as systems, cloud technologies, and databases.">
+		<meta name="generator" content="Hugo 0.16" />
+		<title>Who&#39;s Running That on my System &middot; </title>
+		<link rel="shortcut icon" href="http://jessed.io/images/favicon.ico">
+		<link rel="stylesheet" href="http://jessed.io/css/style.css">
+		<link rel="stylesheet" href="http://jessed.io/css/highlight.css">
+		
+
+		
+		<link rel="stylesheet" href="http://jessed.io/css/monosocialiconsfont.css">
+		
+
+		
+		<link href="http://jessed.io/index.xml" rel="alternate" type="application/rss+xml" title="" />
+		
+	</head>
+
+    <body>
+       <nav class="main-nav">
+	
+	
+		<a href='http://jessed.io/'> <span class="arrow">←</span>Home</a>
+	
+
+	
+		<a href='http://jessed.io/about'>About</a>
+	
+
+	
+	<a class="cta" href="http://jessed.io/index.xml">Subscribe</a>
+	
+</nav>
+
+        <section id="wrapper">
+            <article class="post">
+                <header>
+                    <h1>Who&#39;s Running That on my System</h1>
+                    <h2 class="headline">
+                    September 16, 2016 
+                    <br>
+                    
+                    
+                        
+                            <a href="http://jessed.io/tags/systems">systems</a>
+                        
+                            <a href="http://jessed.io/tags/golang">Golang</a>
+                        
+                            <a href="http://jessed.io/tags/linux">Linux</a>
+                        
+                            <a href="http://jessed.io/tags/databases">databases</a>
+                        
+                            <a href="http://jessed.io/tags/mysql">MySQL</a>
+                        
+                    
+                    
+                    </h2>
+                </header>
+                <section id="post-body">
+                    
+
+<p>Last week, I found myself needing to find what application a query was originating from.
+My typical method for doing this is searching through source code before I
+eventually get angry that I can&rsquo;t find the query originating from an ORM and
+start drafting an email decreeing that all applications get distinct logins to
+the database that I&rsquo;ll never send because who is going to listen anyway.</p>
+
+<p>I had an idea for how I can track a query all the way back to the process that
+accessed it and I even scripted it.</p>
+
+<h3 id="connections">Connections</h3>
+
+<p>In MySQL every connection is mapped to a thread and each thread has an ID. When
+you run <code>SHOW PROCESSLIST</code> in MySQL you can see <strong>all</strong> the running processes.
+The information for this comes from the <code>processlist</code> table in the
+<code>information_schema</code> database. This table also lists the host and the
+<em>ephemeral</em> port of the connection. The ephemeral port exists on the client
+(initiating) side of a TCP connection. So if you see a query running by using a
+tool like <code>mytop</code> and you&rsquo;re able to capture the thread ID you can be pretty
+sure that the connection is still open because TCP connections are expensive and
+most libraries try to pool them and reuse them.</p>
+
+<p>Here is the section of the Go program I wrote to capture the host and the port.</p>
+
+<pre><code class="language-go">db, err := sql.Open(&quot;mysql&quot;, user+&quot;:&quot;+password+&quot;@tcp(&quot;+host+&quot;:3306)/information_schema&quot;)
+if err != nil {
+  log.Fatal(err)
+}
+defer db.Close()
+
+hostWithPort := getHost(db)
+if hostWithPort == nil {
+  log.Println(&quot;Could not find query with that ID&quot;)
+  return
+}
+hostAndPort := strings.Split(hostWithPort, &quot;:&quot;)
+host, port := hostAndPort[0], hostAndPort[1]
+
+log.Printf(&quot;Host: %s  Port: %s\n&quot;, host, port)
+
+func getHost(db *sql.DB) string {
+	result, err := db.Query(&quot;select HOST from processlist where ID = ?&quot;, *pid)
+	if err != nil {
+		log.Panic(err)
+	}
+
+	defer result.Close()
+
+	var host string
+	for result.Next() {
+		result.Scan(&amp;host)
+	}
+
+	return host
+}
+</code></pre>
+
+<h3 id="hunting-down-the-connection">Hunting down the connection</h3>
+
+<p>Once you have the host and port you can then ssh into the host that you were
+given to find what process is connected to the port. This can be discovered
+using a program like lsof. There are many ways to find the port a process is
+using but I am most familiar with lsof.</p>
+
+<p>The Go code to SSH into a server uses the golang.org/x/crypto/ssh library and
+I&rsquo;ve incorporated some of my knowledge of bash.</p>
+
+<pre><code class="language-go">sshClient, err := setUpSSHClient(host)
+if err != nil {
+  log.Panic(err)
+}
+defer sshClient.Close()
+
+lsofOut, err := runCmd(sshClient, &quot;sudo lsof -i tcp:&quot;+port+&quot; | tail -1 | awk '{ print $2; }'&quot;)
+lsofOut = strings.Trim(lsofOut, &quot;\n\r &quot;)
+if err != nil {
+  log.Panic(err)
+}
+
+psOut, err := runCmd(sshClient, &quot;ps -p &quot;+lsofOut+&quot; -o pid -o etime -o command&quot;)
+if err != nil {
+  log.Panic(err)
+}
+
+log.Printf(&quot;PID: %s\n&quot;, lsofOut)
+log.Printf(&quot;Process that owns connection:\n%s\n&quot;, psOut)
+
+func setUpSSHClient(host string) (*ssh.Client, error) {
+	privkey, err := ioutil.ReadFile(os.Getenv(&quot;HOME&quot;) + &quot;/.ssh/id_rsa&quot;)
+	if err != nil {
+		return nil, err
+	}
+	signer, err := ssh.ParsePrivateKey(privkey)
+	if err != nil {
+		return nil, err
+	}
+	sshConfig := &amp;ssh.ClientConfig{
+		User: *sshuser,
+		Auth: []ssh.AuthMethod{
+			ssh.PublicKeys(signer),
+		},
+	}
+
+	client, err := ssh.Dial(&quot;tcp&quot;, host+&quot;:22&quot;, sshConfig)
+	if err != nil {
+		return nil, err
+	}
+
+	return client, nil
+}
+
+func runCmd(client *ssh.Client, command string) (string, error) {
+	sess, err := client.NewSession()
+	if err != nil {
+		return &quot;&quot;, err
+	}
+	defer sess.Close()
+
+	b, err := sess.CombinedOutput(command)
+	if err != nil {
+		return &quot;&quot;, err
+	}
+
+	return string(b), nil
+}
+</code></pre>
+
+<h3 id="conclusion">Conclusion</h3>
+
+<p>Once you have found the process you can then figure out what codebase a query
+originated from, you can do evil (and potentially informative) things like run
+strace, jstack, or gdb to diagnose issues (I wouldn&rsquo;t recommend doing this in
+production). Happy query hunting!</p>
+
+                </section>
+            </article>
+            <footer id="post-meta" class="clearfix">
+                <a href="https://twitter.com/JesseDearing">
+                        <img class="avatar" src="http://jessed.io/images/avatar.png">
+                        <div>
+                            <span class="dark">Jesse Dearing</span>
+                            <span></span>
+                        </div>
+                    </a>
+                <section id="sharing">
+                    <a class="twitter" href="https://twitter.com/intent/tweet?text=http%3a%2f%2fjessed.io%2fpost%2fWhos-running-that-on-my-system%2f - Who%27s%20Running%20That%20on%20my%20System by @JesseDearing"><span class="icon-twitter"> Tweet</span></a>
+
+<a class="facebook" href="#" onclick="
+    window.open(
+      'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+      'facebook-share-dialog',
+      'width=626,height=436');
+    return false;"><span class="icon-facebook-rect"> Share</span>
+</a>
+
+                </section>
+            </footer>
+
+            
+
+            <ul id="post-list" class="archive readmore">
+    <h3>Read more</h3>
+    
+    
+        
+   
+</ul>
+            <footer id="footer">
+    
+        <div id="social">
+
+	
+	
+    
+    <a class="symbol" href="https://www.github.com/jessedearing">
+        circlegithub
+    </a>
+    
+    <a class="symbol" href="https://www.twitter.com/JesseDearing">
+        circletwitterbird
+    </a>
+    
+
+
+</div>
+
+    
+    <p class="small">
+    
+        © Copyright 2016 Jesse Dearing
+    
+    </p>
+</footer>
+
+        </section>
+
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script src="http://jessed.io/js/main.js"></script>
+<script src="http://jessed.io/js/highlight.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+
+
+
+
+    </body>
+</html>

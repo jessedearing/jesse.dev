@@ -1,0 +1,14 @@
+created: 20210602184655648
+modified: 20210602185417732
+title: root
+type: text/vnd.tiddlywiki
+
+Welcome to personal public notebook.
+
+This is less of a blog and more of a collection of public thoughts.
+
+!! Blog Posts
+
+These are more long form ideas, most of the migrated from my previous blog.
+
+<<list-links filter:"[tag[blog]]">>

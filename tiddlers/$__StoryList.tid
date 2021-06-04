@@ -1,0 +1,3 @@
+list: $:/ControlPanel root
+title: $:/StoryList
+type: text/vnd.tiddlywiki

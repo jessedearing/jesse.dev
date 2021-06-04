@@ -1,3 +1,5 @@
-list: $:/ControlPanel root
+created: 20210604033057654
+list: root
+modified: 20210604033848743
 title: $:/StoryList
 type: text/vnd.tiddlywiki

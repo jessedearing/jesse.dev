@@ -47,7 +47,7 @@
         "static": [
             "--rendertiddler",
             "$:/core/templates/static.template.html",
-            "static.html",
+            "index.html",
             "text/plain",
             "--rendertiddler",
             "$:/core/templates/alltiddlers.template.html",

@@ -1,57 +1,109 @@
-# Site settings
-baseurl = "https://jesse.dev/"
-languageCode = "en-us"
-title = "SRE - Data - Systems - Code"
-theme = "hugo-theme-cactus-plus"
-# Enter your tracking code to enable Google Analytics
-googleAnalytics = ""
-# Disable comments by leaving disqusShortname empty
-disqusShortname = ""
+baseurl = "https://jesse.dev"
+DefaultContentLanguage = "en"
+title = "Jesse Dearing"
+# Using theme as git submodule
+theme = "beautifulhugo"
+# Or when using theme as hugo module
+# theme = "github.com/halogenica/beautifulhugo"
+pygmentsStyle = "lightbulb"
+pygmentsUseClasses = true
+pygmentsCodeFences = true
+pygmentsCodefencesGuessSyntax = true
+#pygmentsUseClassic = true
+#pygmentOptions = "linenos=inline"
+#disqusShortname = "XXX"
+#googleAnalytics = "XXX"
 
-[params]
-	uglyurls = true
-	name = "Jesse Dearing"
-	description = "My personal blog where I talk about site reliability engineering, DevOps, Go, and software systems."
-	bio = "My personal blog where I talk about site reliability engineering, DevOps, Go, and software systems."
-	# Enter optionally your twitter account
-	twitter = "JesseDearing"
-	enableRSS = true
-  enableSummary = true
+[Params]
+#  homeTitle = "Beautiful Hugo Theme" # Set a different text for the header on the home page
+  subtitle = "Humanizing Reliable Platforms: An SRE's Approach"
+  mainSections = ["post","posts"]
+  logo = "images/me-profile-less-1mb-bw.png" # Expecting square dimensions
+  favicon = "img/favicon.ico"
+  dateFormat = "January 2, 2006"
+  commit = false
+  rss = true
+  comments = false
+  readingTime = true
+  wordCount = true
+  useHLJS = true
+  socialShare = true
+  delayDisqus = false
+  showRelatedPosts = true
+#  hideAuthor = true
+#  gcse = "012345678901234567890:abcdefghijk" # Get your code from google.com/cse. Make sure to go to "Look and Feel" and change Layout to "Full Width" and Theme to "Classic"
+  disclaimerText = "The opinions expressed herein are my own personal opinions and do not represent my employer’s view in any way."
 
-  enableTOC = true
+#[[Params.bigimg]]
+#  src = "img/triangle.jpg"
+#  desc = "Triangle"
+#[[Params.bigimg]]
+#  src = "img/sphere.jpg"
+#  desc = "Sphere"
+#  # position: see values of CSS background-position.
+#  position = "center top"
+#[[Params.bigimg]]
+#  src = "img/hexagon.jpg"
+#  desc = "Hexagon"
 
-	# Add custom assets with their paths relative to the static folder
-	customCSS = ['../jessedev.css']
-	customJS  = []
+[Author]
+  # Set only your "username" for default hosts and full URLs otherwise (e.g., "https://MyGitLab.org/username")
+  name = "Jesse Dearing"
+  website = "jesse.dev"
+  # email = "youremail@domain.com"
+  # facebook = "username"
+  github = "jessedearing"
+  # gitlab = "username"
+  # bitbucket = "username"
+  # twitter = "username"
+  # reddit = "username"
+  linkedin = "username"
+  # xing = "username"
+  # stackoverflow = "users/XXXXXXX/username"
+  # snapchat = "username"
+  # instagram = "username"
+  # youtube = "user/username" # or channel/channelname
+  # soundcloud = "username"
+  # spotify = "username"
+  # bandcamp = "username"
+  # itchio = "username"
+  # vk = "username"
+  # paypal = "username"
+  # telegram = "username"
+  # 500px = "username"
+  # codepen = "username"
+  # mastodon = "url"
+  # kaggle = "username"
+  # weibo = "username"
+  # slack = "username"
+  # medium = "username"
+  # discord = "invite code (https://discord.gg/XXXXXXX)"
+  # strava = "userid"
+  about = "I am a senior site reliability engineer at InVisionApp. I love databases and the technology that make databases run. While I write code mostly in Go, Node, and Ruby I have been known to get into Java, C, and Python to get things done. I love contributing to Open Source. In my free time I like to try microbrews, ride bicycles, and spend time with my family."
 
-	# The variables below are optionally too and can be used to
-	# translate or customize each string of the theme.
+[[menu.main]]
+    name = "Blog"
+    url = ""
+    weight = 1
 
-	# Navigation links
-	home = ""
-	about = ""
-	subscribe = ""
-	# Pagination links
-	olderPosts = ""
-	newerPosts = ""
-	readMore = ""
-	copyright = ""
-	# Sharing options and author information in posts
-	#aboutAuthor = "I am a senior site reliability engineer at InVisionApp. I love databases and the technology that make databases run. While I write code mostly in Go, Node, and Ruby I have been known to get into Java, C, and Python to get things done. I love contributing to Open Source. In my free time I like to try microbrews, ride bicycles, and spend time with my family."
-	tweet = ""
-	share = ""
-	# 404 page
-	title404 = ""
-	subtitle404 = ""
+[[menu.main]]
+    name = "About"
+    url = "about/"
+    weight = 3
 
-	# Choose a font for the social icons in the footer. Either "mono-social" or "font-awesome"
-	iconFont = "mono-social"
-    # The social icons can be styled differently if you use mono as font - circle, rounded, or empty
-    socialIconStyle = "circle"
+# [[menu.main]]
+#     parent = "samples"
+#     name = "Math Sample"
+#     url = "post/2017-03-05-math-sample"
+#     weight = 2
+#
+# [[menu.main]]
+#     parent = "samples"
+#     name = "Code Sample"
+#     url = "post/2016-03-08-code-sample"
+#     weight = 3
 
-# Add additional social link entries underneath
-[social]
-    twitter  = "https://www.twitter.com/JesseDearing"
-    # facebook = ""
-    github   = "https://www.github.com/jessedearing"
-    # dribble  = ""
+[[menu.main]]
+    name = "Tags"
+    url = "tags"
+    weight = 3

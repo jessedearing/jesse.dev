@@ -2,6 +2,7 @@
 date = "2024-01-31T09:36:50-08:00"
 description = ""
 title = "About me"
+socialShare = false
 +++
 
 I've worked in technical leadership roles for site reliability engineering for

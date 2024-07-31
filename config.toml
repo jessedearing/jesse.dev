@@ -58,7 +58,7 @@ pygmentsCodefencesGuessSyntax = true
   # bitbucket = "username"
   # twitter = "username"
   # reddit = "username"
-  linkedin = "username"
+  linkedin = "jessedearing"
   # xing = "username"
   # stackoverflow = "users/XXXXXXX/username"
   # snapchat = "username"
@@ -80,7 +80,7 @@ pygmentsCodefencesGuessSyntax = true
   # medium = "username"
   # discord = "invite code (https://discord.gg/XXXXXXX)"
   # strava = "userid"
-  about = "I am a senior site reliability engineer at InVisionApp. I love databases and the technology that make databases run. While I write code mostly in Go, Node, and Ruby I have been known to get into Java, C, and Python to get things done. I love contributing to Open Source. In my free time I like to try microbrews, ride bicycles, and spend time with my family."
+  about = "I am an experienced site reliability engineer. I love databases and the technology that make databases run. While I write code mostly in Go, Node, and Ruby I have been known to get into Java, C, and Python to get things done. I love contributing to Open Source. In my free time I like to try microbrews, ride bicycles, and spend time with my family."
 
 [[menu.main]]
     name = "Blog"

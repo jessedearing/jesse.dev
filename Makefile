@@ -5,7 +5,7 @@ default: help
 .PHONY: publish
 publish: ## Renders the site to static files and publishes them to my S3 bucket
 	hugo
-	op plugin run -- aws --profile=personal-admin s3 sync ./public s3://jesse.dev/
+	aws --profile=personal-admin s3 sync ./public s3://jesse.dev/
 
 .PHONY: help
 help: ## Prints help for targets with comments

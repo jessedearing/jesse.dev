@@ -12,11 +12,11 @@ them to ship to platforms that are reliable, compliant, and can be scaled with
 growth.
 
 I love taking existing services and writing intelligent code to support the
-operations of those services. I have experience with Docker and technologies
-designed around Linux containers, AWS, cloud native architectures,
+operations of those services. I have experience with security, Docker and
+technologies designed around Linux containers, AWS, cloud architectures,
 microservices, monitoring, and automation.
 
-While I write code mostly in Go and some Python. I'll reach for a Bash script
+While I write code mostly in Rust, Go and Python. I'll reach for a Bash script
 when needed. I love contributing to Open Source.
 
 I live in Portland, OR and in my free time I like to volunteer in my community,

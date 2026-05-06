@@ -1,0 +1,33 @@
+colorScheme = "congo"
+defaultAppearance = "light"
+autoSwitchAppearance = true
+enableSearch = true
+enableCodeCopy = true
+mainSections = ["post"]
+
+[header]
+  layout = "basic"
+  showTitle = true
+
+[footer]
+  showCopyright = true
+  showThemeAttribution = false
+  showScrollToTop = true
+
+[homepage]
+  layout = "profile"
+  showRecent = true
+  recentLimit = 6
+
+[article]
+  showDate = true
+  showAuthor = true
+  showReadingTime = true
+  showWordCount = true
+  showTableOfContents = true
+  showTaxonomies = true
+  sharingLinks = ["mastodon", "linkedin", "reddit"]
+
+[list]
+  showSummary = true
+  groupByYear = true

@@ -1,0 +1,18 @@
+title = "Jesse Dearing"
+label = "English"
+weight = 1
+
+[params]
+description = "Hacker, server wrangler, learner"
+
+[params.author]
+name = "Jesse Dearing"
+image = "img/me.png"
+headline = "Hacker, server wrangler, learner"
+bio = "I am an experienced site reliability engineer. While I write code mostly in Rust, Go, and Python, I'll reach for a Bash script when needed. I live in Portland, OR."
+links = [
+  { github = "https://github.com/jessedearing" },
+  { linkedin = "https://www.linkedin.com/in/jessedearing" },
+  { mastodon = "https://hachyderm.io/@jessedearing" },
+  { bluesky = "https://bsky.app/profile/jesse.dev" },
+]

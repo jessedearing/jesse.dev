@@ -5,6 +5,11 @@ title = "About me"
 socialShare = false
 +++
 
+My resume in two forms:
+
+- [For humans](https://registry.jsonresume.org/jessedearing)
+- [For machines](https://github.com/jessedearing/resume/blob/main/resume.yaml)
+
 I've worked in technical leadership roles for site reliability engineering for
 many different organizations. I like to build platforms on cloud infrastructure
 to enable product organizations to focus on building the software and enabling

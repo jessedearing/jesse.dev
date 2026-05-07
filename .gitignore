@@ -1,7 +1,7 @@
 public/
 themes/
 
-./.stfolder/
+.stfolder
 
 # wrangler files
 .wrangler

@@ -99,3 +99,6 @@ button is pressed, it prints out a check list of chores for my kids.
 {{< video src="https://media.jesse.dev/20260526-Project-Chore-Button/demo.mp4" caption="Push the button for the list of chores" >}}
 
 {{< figure src="https://media.jesse.dev/20260526-Project-Chore-Button/button.jpg" caption="The whole chore button with printer" alt="Red button on top of a black box with a black receipt printer  behind it" >}}
+
+The code used to make the button work can be viewed on GitHub:
+[jessedearing/chore-button](https://github.com/jessedearing/chore-button)

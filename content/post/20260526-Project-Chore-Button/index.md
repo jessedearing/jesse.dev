@@ -89,7 +89,7 @@ I 3D printed a box to hold the button and house the Raspberry Pi. I made the box
 too small so I doesn't house the Raspberry Pi well. I would make it bigger in
 another iteration.
 
-{{< figure src="https://media.jesse.dev/20260526-Project-Chore-Button/hiding-pi.jpg" caption="The Pi barely fits and I don't have a bottom to the box" alt="Hollow black box with a Raspberry Pi hidden inside" >}}
+{{< figure src="https://media.jesse.dev/20260526-Project-Chore-Button/hiding-pi.png" caption="The Pi barely fits and I don't have a bottom to the box" alt="Hollow black box with a Raspberry Pi hidden inside" >}}
 
 ## Final Product
 
@@ -98,7 +98,9 @@ button is pressed, it prints out a check list of chores for my kids.
 
 {{< video src="https://media.jesse.dev/20260526-Project-Chore-Button/demo.mp4" caption="Push the button for the list of chores" >}}
 
-{{< figure src="https://media.jesse.dev/20260526-Project-Chore-Button/button.jpg" caption="The whole chore button with printer" alt="Red button on top of a black box with a black receipt printer  behind it" >}}
+{{< figure src="https://media.jesse.dev/20260526-Project-Chore-Button/print-out.png" caption="The final printed product" alt="A paper receipt with the title 'Chore List' 'Tuesday, May 26 2026' and the chores: 'Clean up magazines and clothes in downstairs bathroom', 'Take out wing stop bag to trash', 'Take out compost', 'Bring up trash and compost bins from curb', and 'Collect socks and put them in bags at the top of the basement stairs'" >}}
+
+{{< figure src="https://media.jesse.dev/20260526-Project-Chore-Button/button.png" caption="The whole chore button with printer" alt="Red button on top of a black box with a black receipt printer  behind it" >}}
 
 The code used to make the button work can be viewed on GitHub:
 [jessedearing/chore-button](https://github.com/jessedearing/chore-button)
